@@ -167,13 +167,14 @@ class _ProfileState extends State<Profile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // 이미지를 컨테이너 크기 설정
             Container(
               width: double.infinity,
-              height: 10,
+              height: 180, // 고정된 높이 설정
               decoration: BoxDecoration(
                 image: DecorationImage(
                   image: NetworkImage(pet['imageUrl']),
-                  fit: BoxFit.cover,
+                  fit: BoxFit.cover, // 이미지가 잘리지 않게
                 ),
                 borderRadius: BorderRadius.circular(10),
               ),
@@ -235,13 +236,13 @@ class _ProfileState extends State<Profile> {
 
   Widget _buildDetailView() {
     if (selectedPet == null)
-      return const SizedBox.shrink(); // 선택된 반려동물이 없으면 빈 공간을 반환
+      return const SizedBox.shrink(); // 선택된 반려동물이 없으면 빈 공간 반환
 
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView(
         children: [
+          // 프로필, 제목, 사용자 정보
           Row(
             children: [
               CircleAvatar(
@@ -270,7 +271,7 @@ class _ProfileState extends State<Profile> {
                   final updatedData = await Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => ProfileEdit(
+                      builder: (context) => Post(
                         title: selectedPet!['title'],
                         content: selectedPet!['content'],
                       ),
@@ -301,9 +302,51 @@ class _ProfileState extends State<Profile> {
             ],
           ),
           const SizedBox(height: 16),
+
+          // 글 내용
           Text(
             selectedPet!['content'],
             style: const TextStyle(fontSize: 16),
+          ),
+          const SizedBox(height: 16),
+
+          // 이미지
+          if (selectedPet!['imageUrl'] != null &&
+              selectedPet!['imageUrl'].isNotEmpty)
+            Container(
+              width: double.infinity,
+              height: 200, // 고정된 높이로 설정
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                  image: NetworkImage(selectedPet!['imageUrl']),
+                  fit: BoxFit.cover, // 이미지가 잘리지 않게
+                ),
+                borderRadius: BorderRadius.circular(10),
+              ),
+            ),
+
+          const SizedBox(height: 16),
+
+          // 좋아요 및 스크랩 버튼
+          Row(
+            children: [
+              IconButton(
+                icon: Icon(
+                  selectedPet!['isLiked']
+                      ? Icons.favorite
+                      : Icons.favorite_border,
+                  color: Colors.red,
+                ),
+                onPressed: () {
+                  setState(() {
+                    selectedPet!['isLiked'] = !selectedPet!['isLiked'];
+                    selectedPet!['likes'] += selectedPet!['isLiked'] ? 1 : -1;
+                  });
+                },
+              ),
+              Text('${selectedPet!['likes']} Likes'),
+              const Spacer(),
+            ],
           ),
         ],
       ),

@@ -50,91 +50,94 @@ class _PostDetailPageState extends State<PostDetailPage> {
           onPressed: () => Navigator.pop(context),
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 작성자 정보
-            Row(
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              padding: const EdgeInsets.all(16.0),
               children: [
-                CircleAvatar(
-                  backgroundImage: NetworkImage(post['profileUrl']),
-                  radius: 20,
+                // 작성자 정보
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(post['profileUrl']),
+                      radius: 20,
+                    ),
+                    const SizedBox(width: 10),
+                    Text(
+                      post['author'],
+                      style: const TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(height: 12),
+
+                // 제목
                 Text(
-                  post['author'],
+                  post['title'],
                   style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+                      fontSize: 24, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 12),
+
+                // 내용
+                Text(
+                  post['content'],
+                  style: const TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 20),
+
+                // 이미지 추가
+                if (post['image'] != null && post['image'].isNotEmpty)
+                  Image.asset(
+                    post['image'], // 'assets/images/...' 경로로 설정된 이미지 사용
+                    fit: BoxFit.cover,
+                    width: double.infinity,
                   ),
+
+                const SizedBox(height: 20),
+
+                // 좋아요 및 스크랩 버튼
+                Row(
+                  children: [
+                    IconButton(
+                      icon: Icon(post['isLiked']
+                          ? Icons.favorite
+                          : Icons.favorite_border),
+                      color: Colors.red,
+                      onPressed: () {
+                        setState(() {
+                          post['isLiked'] = !post['isLiked'];
+                          post['likes'] += post['isLiked'] ? 1 : -1;
+                        });
+                      },
+                    ),
+                    Text('${post['likes']} likes'),
+                    const SizedBox(width: 16),
+                    IconButton(
+                      icon: Icon(post['isScraped']
+                          ? Icons.bookmark
+                          : Icons.bookmark_border),
+                      onPressed: () {
+                        setState(() {
+                          post['isScraped'] = !post['isScraped'];
+                        });
+                      },
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
 
-            // 제목
-            Text(
-              post['title'],
-              style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-
-            // 내용
-            Text(
-              post['content'],
-              style: const TextStyle(fontSize: 16),
-            ),
-            const SizedBox(height: 20),
-
-            // 이미지 (글 아래에 표시)
-            if (post['imageUrl'] != null && post['imageUrl'].isNotEmpty)
-              Image.network(post['imageUrl']),
-
-            const SizedBox(height: 20),
-
-            // 좋아요 및 스크랩 버튼
-            Row(
-              children: [
-                IconButton(
-                  icon: Icon(
-                      post['isLiked'] ? Icons.favorite : Icons.favorite_border),
-                  color: Colors.red,
-                  onPressed: () {
-                    setState(() {
-                      post['isLiked'] = !post['isLiked'];
-                      post['likes'] += post['isLiked'] ? 1 : -1;
-                    });
-                  },
+                const Divider(),
+                const Text(
+                  '댓글',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                Text('${post['likes']} likes'),
-                const SizedBox(width: 16),
-                IconButton(
-                  icon: Icon(post['isScraped']
-                      ? Icons.bookmark
-                      : Icons.bookmark_border),
-                  onPressed: () {
-                    setState(() {
-                      post['isScraped'] = !post['isScraped'];
-                    });
-                  },
-                ),
-              ],
-            ),
 
-            const Divider(),
-            const Text(
-              '댓글',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-
-            // 댓글 리스트
-            Expanded(
-              child: ListView.builder(
-                itemCount: post['comments'].length,
-                itemBuilder: (context, index) {
-                  final comment = post['comments'][index];
+                // 댓글 리스트
+                ...post['comments'].map<Widget>((comment) {
                   return ListTile(
                     contentPadding:
                         const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
@@ -148,14 +151,16 @@ class _PostDetailPageState extends State<PostDetailPage> {
                     ),
                     subtitle: Text(comment['content']),
                   );
-                },
-              ),
+                }).toList(),
+              ],
             ),
+          ),
 
-            const Divider(),
-
-            // 댓글 입력 TextField
-            Row(
+          // 댓글 입력 TextField
+          Padding(
+            padding:
+                const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+            child: Row(
               children: [
                 Expanded(
                   child: TextField(
@@ -174,8 +179,8 @@ class _PostDetailPageState extends State<PostDetailPage> {
                 ),
               ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

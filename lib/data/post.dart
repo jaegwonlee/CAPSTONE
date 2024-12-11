@@ -6,7 +6,7 @@ List<Map<String, dynamic>> posts = [
     'content': '나 처음으로 강아지 키우는데 엄청 꼬질꼬질해,,먼가 꼬질이 같아서 더귀여운거 같아',
     'profileUrl':
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRESQMNAFE8gcZBlZmbJgAf2CEcLvSKpQSvpQ&s',
-    'image': 'assets/images/product8.png',
+    'image': 'assets/images/item1.png',
     'likes': 1,
     'comments': [],
     'createdAt': DateTime.now().subtract(const Duration(hours: 2)),
@@ -20,7 +20,7 @@ List<Map<String, dynamic>> posts = [
     'content': '우리집 강아지 대형견이라서 위로 점프하면 나랑 키가 거의 비슷함 ㄷㄷ',
     'profileUrl':
         'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRESQMNAFE8gcZBlZmbJgAf2CEcLvSKpQSvpQ&s',
-    'image': 'assets/images/product8.png',
+    'image': 'assets/images/item16.png',
     'likes': 306,
     'comments': [],
     'createdAt': DateTime.now().subtract(const Duration(hours: 2)),
